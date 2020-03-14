@@ -19,8 +19,13 @@
 ;;       (f-join org-attach-id-dir ".org-id-locations"))
 ;; Store files in folder structure, following my org tree structure:2 ends here
 
-;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:4]]
-(setq org-attach-file-list-property nil)
+;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:3]]
+(require 'f)
+(require 'org-attach)
+;; Store files in folder structure, following my org tree structure:3 ends here
+
+;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:5]]
+;; (setq org-attach-file-list-property nil)	
 
 (defvar-local yant/org-attach-file-symlink-path nil
   "Path to directory where the symlink hierarchy is created for the current org buffer.
@@ -173,9 +178,9 @@ Do nothing if `org-attach-dir-suppress-extra-checks' is non-nil."
 			    (f-delete dir) ; delete the dirs, which do not point to children
 			    )))
 		      dirs)))))))))
-;; Store files in folder structure, following my org tree structure:4 ends here
+;; Store files in folder structure, following my org tree structure:5 ends here
 
-;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:5]]
+;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:6]]
 (defun org-attach-dir-symlink (&optional create-if-not-exists-p no-fs-check no-data-dir)
   "Return symlink based path to the attach dir of current entry.
 Do not append symlink to data directory if NO-DATA-dir is not nil."
@@ -222,4 +227,10 @@ Do not append symlink to data directory if NO-DATA-dir is not nil."
 
 (define-advice org-attach-reveal-in-emacs (:around (OLDFUN &rest args) reveal-symlink)
   #'org-attach-reveal@reveal-symlink)
-;; Store files in folder structure, following my org tree structure:5 ends here
+;; Store files in folder structure, following my org tree structure:6 ends here
+
+;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:7]]
+(provide 'org-attach-fs)
+
+;;; org-attach-fs.el ends here
+;; Store files in folder structure, following my org tree structure:7 ends here
