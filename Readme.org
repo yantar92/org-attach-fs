@@ -1,5 +1,7 @@
 *Disclaimer*: The package is experimental and tested only with my own configuration. Anyone trying to use the package will probably need to fix many bugs. PRs are welcome. 
 
+[[file:screenshot.png]]
+
 I usually have a huge numbers of files, related to my projects. I would like to use attach to associate the files with the proper entry, but searching them later in my Dropbox is a pain because of the way Org saves the attachments.
 It makes more sense for me to make attachments follow the org tree structure in the project by default (unless I change the attach folder to something else).
 
