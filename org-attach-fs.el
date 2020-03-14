@@ -12,8 +12,6 @@
 ;; The package started as my personal Emacs config and assumes that
 ;; all the attachments can be accessed from any org file. This
 ;; corresponds to the following config:
-;; (setq org-attach-method 'mv)
-;; (setq org-attach-store-link-p 't)
 ;; (setq org-attach-id-dir "~/.data/")
 ;; (setq org-id-locations-file
 ;;       (f-join org-attach-id-dir ".org-id-locations"))

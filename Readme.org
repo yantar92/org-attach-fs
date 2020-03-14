@@ -14,6 +14,14 @@ It makes more sense for me to make attachments follow the org tree structure in 
 This can be done if we make attachment by creating a symbolic link to the attach folder in the place, according to the headline path.
 This way allows to keep all the file attached to the project accessible with relative paths.
 
+*Important*: The package expects all the attachments to be accessible from any org file. I use the following config to achieve this:
+
+#+begin_src emacs-lisp
+(require 'f)
+(setq org-attach-id-dir "~/.data/")
+(setq org-id-locations-file
+      (f-join org-attach-id-dir ".org-id-locations"))
+#+end_src
 
 * Implementation 
 :PROPERTIES:
