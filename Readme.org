@@ -6,6 +6,12 @@ It makes more sense for me to make attachments follow the org tree structure in 
 This can be done if we make attachment by creating a symbolic link to the attach folder in the place, according to the headline path.
 This way allows to keep all the file attached to the project accessible with relative paths.
 
+
+* Implementation 
+:PROPERTIES:
+:CREATED:  [2020-03-14 Sat 12:42]
+:END:
+
 For the implementation, the idea is keeping all the actual attachments in a common folder for all the org files according to their uuid. As a result, I can safely refile tasks between different org files without worrying about moving the attachments around (assuming that there is not change in the task ids).
 
 The above does not follow the task hierarchy of the tasks.
