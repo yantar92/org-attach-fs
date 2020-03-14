@@ -1,0 +1,18 @@
+*Disclaimer*: The package is experimental and tested only with my own configuration. Anyone trying to use the package will probably need to fix many bugs. PRs are welcome. 
+
+I usually have a huge numbers of files, related to my projects. I would like to use attach to associate the files with the proper entry, but searching them later in my Dropbox is a pain because of the way Org saves the attachments.
+It makes more sense for me to make attachments follow the org tree structure in the project by default (unless I change the attach folder to something else).
+
+This can be done if we make attachment by creating a symbolic link to the attach folder in the place, according to the headline path.
+This way allows to keep all the file attached to the project accessible with relative paths.
+
+For the implementation, the idea is keeping all the actual attachments in a common folder for all the org files according to their uuid. As a result, I can safely refile tasks between different org files without worrying about moving the attachments around (assuming that there is not change in the task ids).
+
+The above does not follow the task hierarchy of the tasks.
+To implement this, for each task, I store the symlinks to the child tasks in the task's attachment directory.
+Therefore, apart from the attachments, I have =yant/org-attach-symlinks-directory= folder in the task's attach dir.
+This folder contains a back reference to the attachment dir (if there are attachments) =yant/org-attach-attachments-symlink-directory= and symlinks to the corresponding symlink folders of the children with attachments somewhere down the hierarchy.
+
+Now, it is trivial to create the attachment hierarchy for any org file. I just make folders pointing to the =yant/org-attach-symlinks-directory= of the top level tasks either in the same folder with the org file or in =yant/org-attach-file-symlink-path= (file local).
+
+When I have the mirror attach folder structure, it make sense to open this structure on =org-attach-reveal= instead of opening the actual attach dirs.
