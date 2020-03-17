@@ -1,5 +1,5 @@
 ;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:2]]
-;;; org-attach-fs.el --- Mirror org heading heirarchy to store attachments  -*- lexical-binding: t; -*-
+;;; org-attach-fs.el --- Mirror org heading heirarchy to store attachments
 
 ;; Version: 0.0
 ;; Author: Ihor Radchenko <yantar92@gmail.com>
@@ -12,6 +12,8 @@
 ;; The package started as my personal Emacs config and assumes that
 ;; all the attachments can be accessed from any org file. This
 ;; corresponds to the following config:
+;; (setq org-attach-method 'mv)
+;; (setq org-attach-store-link-p 't)
 ;; (setq org-attach-id-dir "~/.data/")
 ;; (setq org-id-locations-file
 ;;       (f-join org-attach-id-dir ".org-id-locations"))
@@ -23,7 +25,7 @@
 ;; Store files in folder structure, following my org tree structure:3 ends here
 
 ;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:5]]
-;; (setq org-attach-file-list-property nil)	
+;; (setq org-attach-file-list-property nil)
 
 (defvar-local yant/org-attach-file-symlink-path nil
   "Path to directory where the symlink hierarchy is created for the current org buffer.
