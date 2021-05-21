@@ -4,6 +4,8 @@
 :CREATED:  [2020-03-14 Sat 12:50]
 :END:
 
+*Important - this code is frozen*: After recent org-mode changes, attach code in org-mode have been modified and not compatible anymore with this repo. 
+
 *Disclaimer*: The package is experimental and tested only with my own configuration. Anyone trying to use the package will probably need to fix many bugs. PRs are welcome. 
 
 [[file:screenshot.png]]
