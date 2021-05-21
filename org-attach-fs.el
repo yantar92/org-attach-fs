@@ -1,4 +1,3 @@
-;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:2]]
 ;;; org-attach-fs.el --- Mirror org heading heirarchy to store attachments
 
 ;; Version: 0.0
@@ -13,18 +12,13 @@
 ;; all the attachments can be accessed from any org file. This
 ;; corresponds to the following config:
 ;; (setq org-attach-method 'mv)
-;; (setq org-attach-store-link-p 't)
 ;; (setq org-attach-id-dir "~/.data/")
 ;; (setq org-id-locations-file
 ;;       (f-join org-attach-id-dir ".org-id-locations"))
-;; Store files in folder structure, following my org tree structure:2 ends here
 
-;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:3]]
 (require 'f)
 (require 'org-attach)
-;; Store files in folder structure, following my org tree structure:3 ends here
 
-;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:5]]
 ;; (setq org-attach-file-list-property nil)
 
 (defvar-local yant/org-attach-file-symlink-path nil
@@ -80,7 +74,10 @@ Bound search by SUBTREE-END if non nil."
   "Return non nil if the task at point has an attached file."
   (org-with-wide-buffer
    (when (eq major-mode 'org-mode) (org-back-to-heading))
-   (member org-attach-auto-tag (org-get-tags nil t))))
+   (or (member org-attach-auto-tag (org-get-tags nil t))
+       (let ((dir (let ((org-attach-dir-suppress-extra-checks t)) (org-attach-dir))))
+	 (and dir
+	      (org-attach-file-list dir))))))
 
 (defvar yant/--processed-entry-ids nil
   "Variable used to store processed entry ids in `org-attach-dir@yant/org-attach-ensure-attach-dir-symlink'")
@@ -178,18 +175,18 @@ Do nothing if `org-attach-dir-suppress-extra-checks' is non-nil."
 			    (f-delete dir) ; delete the dirs, which do not point to children
 			    )))
 		      dirs)))))))))
-;; Store files in folder structure, following my org tree structure:5 ends here
 
-;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:6]]
+(advice-remove 'org-attach-dir #'org-attach-dir@yant/org-attach-ensure-attach-dir-symlink)
+
 (defun org-attach-dir-symlink (&optional create-if-not-exists-p no-fs-check no-data-dir)
   "Return symlink based path to the attach dir of current entry.
 Do not append symlink to data directory if NO-DATA-dir is not nil."
   (org-with-point-at-org-buffer
-   (if create-if-not-exists-p
-       (let ((symlink (org-attach-dir-symlink nil nil no-data-dir)))
-	 (if (not (f-exists-p symlink))
-	     (org-attach-dir 't))
-	 symlink))
+   (when create-if-not-exists-p
+     (let ((symlink (org-attach-dir-symlink nil nil no-data-dir)))
+       (when (not (f-exists-p symlink))
+	 (org-attach-dir 't))
+       symlink))
    (let* ((entry-name (yant/org-entry-name-cleanup-for-dir))
 	  (attach-dir-inherited-p (and (org-entry-get-with-inheritance "ATTACH_DIR_INHERIT")
 				       (not (org-entry-get (point) "ATTACH_DIR_INHERIT" nil))));; only consider if the entry is the child
@@ -204,33 +201,36 @@ Do not append symlink to data directory if NO-DATA-dir is not nil."
 	  (if (org-up-heading-safe)
 	      (let ((head-path (org-attach-dir-symlink create-if-not-exists-p nil 't)))
 		(when head-path (f-slash (f-join head-path entry-path))))
-            (f-slash (f-join (or yant/org-attach-file-symlink-path
+	    (f-slash (f-join (or yant/org-attach-file-symlink-path
 				 default-directory)
 			     entry-path)))))))))
 
 (define-advice org-attach-reveal (:around (OLDFUN) reveal-symlink)
   "Go to symlink attach dir structure instead of an actual attach dir."
-  (let ((dir (org-attach-dir))
+  (let ((dir (org-attach-dir-get-create))
 	(attach-dir-inherited-p (and (org-entry-get-with-inheritance "ATTACH_DIR_INHERIT")
 				     (not (org-entry-get (point) "ATTACH_DIR_INHERIT" nil))));; only consider if the entry is the child
 	)
+    ;; (org-attach-dir@yant/org-attach-ensure-attach-dir-symlink dir)
     (org-attach-sync)
-    (letf (((symbol-function 'org-attach-dir) (if (yant/org-task-has-attachments-p)
-						  #'org-attach-dir-symlink
-						(lambda (&rest args)
-                                                  (if (yant/org-subtree-has-attachments-p)
-                                                      (org-attach-dir-symlink 't nil 't)
-                                                    dir
-                                                    )))))
-      (when attach-dir-inherited-p (org-attach-tag 'off))
-      (funcall OLDFUN))))
+    ;; (cl-letf (((symbol-function 'org-attach-dir-get-create) (if (yant/org-task-has-attachments-p)
+    ;; 								(lambda (&rest args) (org-attach-dir-symlink 't nil nil))
+    ;; 							      (lambda (&rest args)
+    ;; 								(if (yant/org-subtree-has-attachments-p)
+    ;; 								    (org-attach-dir-symlink 't nil 't)
+    ;; 								  dir
+    ;; 								  )))))
+    ;;   (when attach-dir-inherited-p (org-attach-tag 'off))
+    ;;   (funcall OLDFUN))
+    (when attach-dir-inherited-p (org-attach-tag 'off))
+    (funcall OLDFUN)
+    ))
+(advice-remove 'org-attach-reveal #'org-attach-reveal@reveal-symlink)
+;; (advice-add 'org-attach-reveal-in-emacs :around #'org-attach-reveal@reveal-symlink)
 
-(define-advice org-attach-reveal-in-emacs (:around (OLDFUN &rest args) reveal-symlink)
-  #'org-attach-reveal@reveal-symlink)
-;; Store files in folder structure, following my org tree structure:6 ends here
-
-;; [[id:9361bc68-010b-45f1-bddd-4638d6344758][Store files in folder structure, following my org tree structure:7]]
 (provide 'org-attach-fs)
 
 ;;; org-attach-fs.el ends here
-;; Store files in folder structure, following my org tree structure:7 ends here
+
+(add-hook 'after-init-hook (lambda ()
+    (advice-add 'find-file-noselect :around #'dired-find-file@disable-abbreviate-file-name)))
